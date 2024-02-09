@@ -1,9 +1,6 @@
 name: Deploy to Surge
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   deploy:
@@ -11,13 +8,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    
+    - run: npm install -g surge
+    - run: surge ./ ${{ secrets.apromaster-github-page.surge.sh }} --token ${{ secrets.apromaster-github-page.surge.sh }}
 
-    - name: Build and Deploy
-      run: |
-        # Configurar Surge.sh
-        npm install --global surge
-        surge token 88eead54ea33f15e358ede371bb6cf9c # Reemplazar <SURGE_API_KEY> con la API Key de Surge de cada estudiante
-
-        # Desplegar en Surge.sh
-        surge --project ./ --domain apromaster-github-page.surge.sh # Reemplazar <SURGE_SUBDOMAIN> con un subdominio único para cada estudiante
+    
